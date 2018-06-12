@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:mmd xmlns:mmd="http://www.met.no/schema/mmd" xmlns:gml="http://www.opengis.net/gml">
+  <mmd:metadata_version>1</mmd:metadata_version>
+  <mmd:dataset_language>en</mmd:dataset_language>
+  <mmd:metadata_identifier>{{ wigos }}</mmd:metadata_identifier>
+  <mmd:title xml:lang="en">Observations from {{ station_name|title }}</mmd:title>
+  <mmd:title xml:lang="no">Observasjoner fra {{ station_name|title }}</mmd:title>
+  <mmd:last_metadata_update></mmd:last_metadata_update>
+  <mmd:iso_topic_category>climatologyMeteorologyAtmosphere</mmd:iso_topic_category>
+  <mmd:data_center>
+    <mmd:data_center_name>
+      <mmd:short_name>MET Norway</mmd:short_name>
+      <mmd:long_name>Norwegian Meteorological Institute</mmd:long_name>
+    </mmd:data_center_name>
+    <mmd:data_center_url>http://met.no</mmd:data_center_url>
+    <mmd:dataset_id>{{ wigos }}</mmd:dataset_id>
+    <mmd:personnel>
+      <mmd:role>Data center contact</mmd:role>
+      <mmd:name>Vegard Kristiansen</mmd:name>
+      <mmd:contact_address>
+        <mmd:address>Henrik Mohns plass 1</mmd:address>
+        <mmd:city>OSLO</mmd:city>
+        <mmd:postal_code>0313</mmd:postal_code>
+        <mmd:country>Norway</mmd:country>
+      </mmd:contact_address>
+    </mmd:personnel>
+  </mmd:data_center>
+  <mmd:personnel>
+    <mmd:role>Investigator</mmd:role>
+    <mmd:name>Øystein Godøy</mmd:name>
+    <mmd:contact_address>
+      <mmd:city>Oslo</mmd:city>
+      <mmd:postal_code>0313</mmd:postal_code>
+      <mmd:country>Norway</mmd:country>
+    </mmd:contact_address>
+  </mmd:personnel>
+  <mmd:personnel>
+    <mmd:role>Technical contact</mmd:role>
+    <mmd:name>Vegard Bønes</mmd:name>
+    <mmd:contact_address>
+      <mmd:city>OSLO</mmd:city>
+      <mmd:postal_code>0313</mmd:postal_code>
+      <mmd:country>Norway</mmd:country>
+    </mmd:contact_address>
+  </mmd:personnel>
+  <mmd:personnel>
+    <mmd:role>Metadata author</mmd:role>
+    <mmd:name>Solfrid Agersten</mmd:name>
+    <mmd:email>klima@met.no</mmd:email>
+    <mmd:contact_address>
+      <mmd:address>Box 43</mmd:address>
+      <mmd:city>OSLO</mmd:city>
+      <mmd:postal_code>0313</mmd:postal_code>
+      <mmd:country>Norway</mmd:country>
+    </mmd:contact_address>
+  </mmd:personnel>
+  <mmd:keywords vocabulary="gcmd">
+    <mmd:keyword/>
+  </mmd:keywords>
+  <mmd:temporal_extent>
+    <mmd:start_date>{{ start_date }}</mmd:start_date>
+    <mmd:end_date></mmd:end_date>
+  </mmd:temporal_extent>
+  <mmd:geographic_extent>
+    <mmd:rectangle>
+      <mmd:north>{{ latitude }}</mmd:north>
+      <mmd:south>{{ latitude }}</mmd:south>
+      <mmd:east>{{ longitude }}</mmd:east>
+      <mmd:west>{{ longitude }}</mmd:west>
+    </mmd:rectangle>
+    <mmd:polygon>
+      <gml:Polygon id="polygon" srsName="EPSG:4326">
+        <gml:exterior>
+          <gml:LinearRing />
+        </gml:exterior>
+      </gml:Polygon>
+    </mmd:polygon>
+  </mmd:geographic_extent>
+  <mmd:data_access>
+    <mmd:type>OPeNDAP</mmd:type>
+    <mmd:name>{{ wigos }}</mmd:name>
+    <mmd:resource>{{ announced_location }}</mmd:resource>
+    <mmd:description>Opendap access to data. Not realtime.</mmd:description>
+  </mmd:data_access>
+  <mmd:dataset_citation>
+    <mmd:dataset_release_date />
+  </mmd:dataset_citation>
+  <mmd:reference type="freetext">Freely distributed. Must credit the source of data, e.g. "Data from the Norwegian Meteorological Institute", "Based on data from the Norwegian Meteorological Institute". Data and products are licensed under Norwegian license for public data (NLOD) and Creative Commons Attribution 3.0 Norway. See http://met.no/English/Data_Policy_and_Data_Services/.</mmd:reference>
+  <mmd:project />
+  <mmd:activity_type>In Situ Land-based station</mmd:activity_type>
+  <mmd:platform>
+    <mmd:short_name>{{ station_name|title }}</mmd:short_name>
+  </mmd:platform>
+  <mmd:access_constraint>Open</mmd:access_constraint>
+  <mmd:use_constraint>Public domain</mmd:use_constraint>
+  <mmd:dataset_production_status>In Work</mmd:dataset_production_status>
+</mmd:mmd>
