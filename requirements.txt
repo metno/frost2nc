@@ -3,3 +3,4 @@ netCDF4
 python-dateutil
 cf_units
 jinja2
+pyyaml

@@ -12,7 +12,7 @@ setup(
         'jinja2'
     ],
     package_data={
-        'frost_extract': ['templates/mmd.xml']
+        'frost_extract': ['templates/mmd.xml', 'templates/global_attributes.xml']
         },
     entry_points='''
         [console_scripts]

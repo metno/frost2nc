@@ -7,7 +7,8 @@ import netCDF4
 import os
 import sys
 import cf_units
-
+import yaml
+import pkgutil
 
 class NetcdfWriter(object):
     def __init__(self):
@@ -93,7 +94,6 @@ class NetcdfWriter(object):
 
         if not append:
             self._add_time_variable(nc)
-            self._add_metadata(nc, source)
             self._add_location(nc, source)
 
 
@@ -101,7 +101,8 @@ class NetcdfWriter(object):
         times = nc.variables['time']
         idx = 0
         for t in times:
-            time_indexes[t] = idx
+            # print(float(t), dir(t))
+            time_indexes[float(t)] = idx
             idx += 1
 
         new_times = list(self._observations.keys())
@@ -122,6 +123,8 @@ class NetcdfWriter(object):
                 idx = time_indexes[t]
                 var[idx] = convert(value['value'])
 
+        self._add_metadata(nc, source)
+
         nc.close()
 
     def _get_variable(self, nc, name, element_information):
@@ -129,15 +132,16 @@ class NetcdfWriter(object):
             logging.debug('Adding variable: ' + name)
             var = nc.createVariable(name, 'f4', ('time',), zlib=True)
             var.long_name = element_information.get('name', name)
+            var.coverage_content_type = 'coordinate'
             if 'cfConvention' in element_information:
                 cf = element_information['cfConvention']
                 var.standard_name = cf.get('standardName', name)
-                var.unit = cf.get('unit', '1')
+                var.units = cf.get('unit', '1')
                 if 'cellMethod' in cf:
                     var.cell_methods = cf['cellMethod']
             else:
                 var.standard_name = name
-                var.unit = element_information.get('unit', '1')
+                var.units = element_information.get('unit', '1')
             return var
         else:
             return nc.variables[name]
@@ -168,12 +172,21 @@ class NetcdfWriter(object):
         return time
     
     def _add_metadata(self, nc, source):
-        nc.station_name = source['name']
-        nc.wigos = source.get('wigosId', 'unknown')
-        nc.wmo_identifier = str(source['wmoId'])
-        nc.date_created  = str(datetime.now(tz=timezone.utc))
-        #for key, value in self._static_metadata.items():
-        #    setattr(nc, key, value)
+        source['now'] = datetime.now(tz=timezone.utc).isoformat()
+        longitude, latitude = tuple(source['geometry']['coordinates'])
+        source['longitude'] = longitude
+        source['latitude'] = latitude
+        source['program_args'] = ' '.join(sys.argv)
+        if 'wigosId' not in source:
+            source['wigosId'] = 'unknown'
+        times = nc.variables['time']
+        source['time_start'] = datetime.fromtimestamp(times[0]).isoformat()
+        source['time_end'] = datetime.fromtimestamp(times[-1]).isoformat()
+
+        config = pkgutil.get_data('frost_extract', 'templates/global_attributes.yaml')
+        for key, raw in yaml.load(config).items():
+            value = raw % source
+            setattr(nc, key, value)
 
     def _add_location(self, nc, source):
         longitude, latitude = source['geometry']['coordinates']
