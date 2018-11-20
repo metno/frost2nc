@@ -1,51 +1,31 @@
 # Read frost.met.no data into netcdf files
 
-## Installation for playing
+This contains a command-line utility for reading data from [frost](https://frost.met.no), and converting that data to netcdf format. It has been created to provide an easier way of access to observation data for scientists who prefer using the netcdf format over json. Non-scientists should use the frost api directly instead of going through his program.
+
+
+## Installation
+
+This has been tested on ubuntu xenial and bionic, and runs using python3. One of our pip requirements need access to the debian package `libudunits2-dev`. Install that one before you do a normal install, using `sudo pip3 install -r requirements.txt && sudo pip3 install .`
+
+After having installed, you should have a frost executable in your path. Run `frost --help` for usage instructions.
+
+#### Special considerations
+
+Installation of requirements currently fail unless you also have said `pip3 install numpy==1.15.4` before you start installing `requirements.txt`.
+
+### Continous updates
+
+Keeping an updated set of netcdf files is partly provided by the `frost-extract-all` script, and the provided systemd scripts. Installation of this is not automated, but you can install like this:
 
 ```bash
-$ virtualenv -ppython3 venv
-$ . venv/bin/activate
-$ python setup.py 
-$ pip install --editable .
+$ export FROST_KEY=<my key from https://frost.met.no>
+$ sudo cp frost-extract-all /usr/local/bin
+$ sudo cp systemd/frost-extract-all.* /etc/systemd/system/
+$ sudo mkdir /etc/systemd/system/frost-extract-all.service.d/
+$ printf "[Service]\nEnvironment=FROST_KEY=$FROST_KEY\n" | sudo tee /etc/systemd/system/frost-extract-all.service.d/custom.conf
+$ sudo adduser obs2nc
+$ sudo systemctl daemon-reload
+$ sudo systemctl start frost-extract-all.timer
 ```
 
-...and then the next times you want to run:
-
-```bash
-$ . venv/bin/activate
-```
-
-## Initial run
-
-```bash
-$ export FROST_KEY=<my frost key>
-$ export DATA_DIR=data/
-$ export NC_DIR=data/nc
-$ export MMD_DIR=data/mmd
-$ export OPENDAP_PATH=https://thredds.met.no/observations
-$ export STATIONS="SN99710  SN99720  SN99735  SN99740  SN99752  SN99754  SN99760  SN99765  SN99790  SN99840  SN99880  SN99910  SN99927  SN99935  SN99938"
-$ mkdir -p $DATA_DIR
-$ frost download elements > $DATA_DIR/elements.json
-$ for station in $STATIONS; do mkdir -p $DATA_DIR/$station; done
-$ for station in $STATIONS; do frost download source -s$station > $DATA_DIR/$station/source.json; done
-$ for station in $STATIONS; do frost download observations -o$DATA_DIR -s$station; done
-
-$ mkdir -p $NC_DIR $MMD_DIR
-$ for station in $STATIONS; do frost write netcdf -o$NC_DIR/$station.nc -s$DATA_DIR/$station/source.json -edata/elements.json  $DATA_DIR/$station/*/*.json; done
-$ for station in $STATIONS; do frost write mmd -o$MMD_DIR $NC_DIR/$station.nc -l$OPENDAP_PATH/$station.nc; done
-```
-
-## Updates
-
-```bash
-$ export FROST_KEY=<my frost key>
-$ export DATA_DIR=data/
-$ export NC_DIR=data/nc
-$ export STATIONS="SN99710  SN99720  SN99735  SN99740  SN99752  SN99754  SN99760  SN99765  SN99790  SN99840  SN99880  SN99910  SN99927  SN99935  SN99938"
-
-$ for station in $STATIONS; do 
-    frost download observations -o$DATA_DIR -s$station --duration=3 | xargs \
-        frost write netcdf --append -o$NC_DIR/$station.nc -s$DATA_DIR/$station/source.json -edata/elements.json
-done
-```
-
+This will run an hourly job, creating and maintaining a list of all data for a set of stations for the last three months.
