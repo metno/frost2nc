@@ -45,25 +45,21 @@ for station in $STATIONS; do
     echo "Extract station $station"
     frost download source -s$station > "$JSON_OUTPUT_DIR/$station.json"
     new_files=$(frost download observations --output="$JSON_OUTPUT_DIR" -s"$station" --duration "$DURATION")
-    for f in $new_files; do
 
-        month=$(basename "$f" .json)
-        year=$(basename $(dirname $f))
+    output_file="$NC_OUTPUT_DIR/$station.nc"
+    if [ -f "$output_file" ]; then
+        append="--append"
+    else
+        append=""
+    fi
 
-        output_file="$NC_OUTPUT_DIR/$station.nc"
-        if [ -f "$output_file" ]; then
-            append="--append"
-        else
-            append=""
-        fi
+    frost write netcdf \
+        -o"$output_file" \
+        $append \
+        -s"$JSON_OUTPUT_DIR/$station.json" \
+        -e"$JSON_OUTPUT_DIR/elements.json" \
+        $new_files
 
-        frost write netcdf \
-            -o"$output_file" \
-            $append \
-            -s"$JSON_OUTPUT_DIR/$station.json" \
-            -e"$JSON_OUTPUT_DIR/elements.json" \
-            "$JSON_OUTPUT_DIR/$station/$year/$month.json"
-    done
     echo "done"
 done
 
