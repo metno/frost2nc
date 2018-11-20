@@ -5,12 +5,12 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     libudunits2-dev
 
-COPY requirements.txt /tmp
-RUN pip3 install -r /tmp/requirements.txt
+WORKDIR /src/
+COPY requirements.txt /src/
+RUN pip3 install numpy
+RUN pip3 install -r requirements.txt
 
-COPY . /src
-
-WORKDIR /src
+COPY . .
     
 RUN pip3 install .
 
