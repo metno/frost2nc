@@ -91,6 +91,8 @@ class NetcdfWriter(object):
             mode = 'a'
         nc = netCDF4.Dataset(file_name, mode, format='NETCDF4')
 
+        logging.debug('Opened file')
+
         elements = {}
         with open(elements_file) as f:
             for e in json.load(f):
@@ -99,6 +101,7 @@ class NetcdfWriter(object):
         if not append:
             self._add_time_variable(nc)
             self._add_location(nc, source)
+            logging.debug('added time and location')
 
 
         time_indexes = {}
@@ -112,11 +115,14 @@ class NetcdfWriter(object):
         new_times = list(self._observations.keys())
         new_times.sort()
 
+
         for t in new_times:
             if t not in time_indexes:
                 times[idx] = t
                 time_indexes[t] = idx
                 idx += 1
+
+        logging.debug('times updated')
 
         for t in new_times:
             params = self._observations[t]
@@ -126,8 +132,10 @@ class NetcdfWriter(object):
                 convert = self._get_conversion(nc, p, element)
                 idx = time_indexes[t]
                 var[idx] = convert(value['value'])
+        logging.debug('added new data')
 
         self._add_metadata(nc, source)
+        logging.debug('added metadata')
 
         nc.close()
 
