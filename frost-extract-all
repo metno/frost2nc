@@ -53,7 +53,7 @@ for station in $STATIONS; do
         append=""
     fi
 
-    frost write netcdf \
+    frost --loglevel=debug write netcdf \
         -o"$output_file" \
         $append \
         -s"$JSON_OUTPUT_DIR/$station.json" \
