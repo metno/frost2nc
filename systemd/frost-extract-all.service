@@ -4,8 +4,11 @@ Wants=frost-extract-all.timer
 
 [Service]
 User=obs2nc
-ExecStart=/home/obs2nc/bin/frost-extract-all.sh
+ExecStart=/usr/local/bin/frost-extract-all
+WorkingDirectory=/home/obs2nc
 Environment=FROST_KEY=""
+Environment=LC_ALL=C.UTF-8
+Environment=LANG=C.UTF-8
 
 [Install]
 WantedBy=multi-user.target
