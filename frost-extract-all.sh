@@ -9,6 +9,12 @@ export FROST_SERVER=frost.met.no
 JSON_OUTPUT_DIR=$HOME/json_data
 NC_OUTPUT_DIR=/data
 
+
+if [ -z "$FROST_KEY"]; then 
+    echo "Missing FROST_KEY"
+    exit 1
+fi
+
 echo download elements list
 
 frost download elements > "$JSON_OUTPUT_DIR/elements.json"
