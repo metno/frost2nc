@@ -2,15 +2,35 @@
 
 set -euo pipefail
 
-STATIONS="SN99710 SN99720  SN99735  SN99740  SN99752  SN99754  SN99760  SN99765  SN99790  SN99840  SN99880  SN99910  SN99927  SN99935  SN99938"
-
 export FROST_SERVER=frost.met.no
 
-JSON_OUTPUT_DIR=$HOME/json_data
-NC_OUTPUT_DIR=/data
+STATIONS="SN99710 SN99720 SN99735 SN99740 SN99752 SN99754 SN99760 SN99765 SN99790 SN99840 SN99880 SN99910 SN99927 SN99935 SN99938"
+JSON_OUTPUT_DIR=/tmp/
+NC_OUTPUT_DIR=.
+DURATION=3
+
+while getopts "hj:o:s:d:" opt; do 
+    case "$opt" in 
+    j)
+        JSON_OUTPUT_DIR=$OPTARG
+        ;;
+    o)
+        NC_OUTPUT_DIR=$OPTARG
+        ;;
+    s)
+        STATIONS=$OPTARG
+        ;;
+    d)
+        DURATION=$OPTARG
+        ;;
+    h)
+        echo Usage $0 [-j JSON_OUTPUT_DIR] [-o NC_OUTPUT_DIR] [-s STATIONS]
+        exit
+    esac
+done
 
 
-if [ -z "$FROST_KEY"]; then 
+if [ -z "$FROST_KEY" ]; then 
     echo "Missing FROST_KEY"
     exit 1
 fi
@@ -22,23 +42,28 @@ frost download elements > "$JSON_OUTPUT_DIR/elements.json"
 echo start loop
 
 for station in $STATIONS; do
-    echo "$(date) Extract station $station"
+    echo "Extract station $station"
     frost download source -s$station > "$JSON_OUTPUT_DIR/$station.json"
-    new_files=$(frost download observations --output="$JSON_OUTPUT_DIR" -s"$station" --duration 3)
+    new_files=$(frost download observations --output="$JSON_OUTPUT_DIR" -s"$station" --duration "$DURATION")
     for f in $new_files; do
 
         month=$(basename "$f" .json)
         year=$(basename $(dirname $f))
 
-        output_dir="$NC_OUTPUT_DIR/$station/$year"
-        mkdir -p "$output_dir"
+        output_file="$NC_OUTPUT_DIR/$station.nc"
+        if [ -f "$output_file" ]; then
+            append="--append"
+        else
+            append=""
+        fi
+
         frost write netcdf \
-            -o/tmp/data.nc \
+            -o"$output_file" \
+            $append \
             -s"$JSON_OUTPUT_DIR/$station.json" \
             -e"$JSON_OUTPUT_DIR/elements.json" \
             "$JSON_OUTPUT_DIR/$station/$year/$month.json"
-        mv /tmp/data.nc "$output_dir/$month.nc"
     done
-    echo "$(date) done"
+    echo "done"
 done
 
