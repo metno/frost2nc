@@ -28,15 +28,19 @@ class NetcdfWriter(object):
         for obs in timestep['observations']:
             instances = params.setdefault(self.get_obs_name(obs), [])
             instances.append(obs)
+        found_all = True
         for name, observations in params.items():
             if len(observations) > 1:
                 selected = self._select_obs(observations)
                 if selected:
                     ret.append(selected)
                 else:
-                    logging.warning('Unable to find suitable candidate for ' + name + ' for time ' + timestep['referenceTime'])
+                    found_all = False
             else:
                 ret.append(observations[0])
+        if not found_all:
+           logging.warning('Failed to find suitable candidates for at least some ' + name)
+
         return ret
 
     def _select_obs(self, candidates):
