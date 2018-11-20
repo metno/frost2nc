@@ -24,6 +24,7 @@ $ sudo cp systemd/frost-extract-all.* /etc/systemd/system/
 $ sudo mkdir /etc/systemd/system/frost-extract-all.service.d/
 $ printf "[Service]\nEnvironment=FROST_KEY=$FROST_KEY\n" | sudo tee /etc/systemd/system/frost-extract-all.service.d/custom.conf
 $ sudo adduser obs2nc
+$ sudo -u obs2nc mkdir /home/obs2nc/json_data
 $ sudo systemctl daemon-reload
 $ sudo systemctl start frost-extract-all.timer
 ```
