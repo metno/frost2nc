@@ -1,0 +1,11 @@
+[Unit]
+Description=Run netcdf file generation from frost data
+Wants=frost-extract-all.timer
+
+[Service]
+User=obs2nc
+ExecStart=/home/obs2nc/bin/frost-extract-all.sh
+Environment=FROST_KEY=""
+
+[Install]
+WantedBy=multi-user.target

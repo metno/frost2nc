@@ -1,0 +1,8 @@
+[Unit]
+Description=Run hourly netcdf file generation from frost data
+
+[Timer]
+OnCalendar=*-*-* *:45:00
+
+[Install]
+WantedBy=timers.target
