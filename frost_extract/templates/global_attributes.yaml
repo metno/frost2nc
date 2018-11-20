@@ -12,7 +12,7 @@ acknowledgment: frost.met.no
 comment: observations based on data from frost.met.no
 creator_email: post@met.no
 creator_name: Norwegian Meteorological institute
-creator_url: met.no
+creator_url: https://met.no
 geospatial_bounds: POINT(%(longitude)f %(latitude)f)
 geospatial_bounds_crs: latlon
 geospatial_lat_max: "%(latitude)f"
