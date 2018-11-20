@@ -4,7 +4,7 @@ Wants=frost-extract-all.timer
 
 [Service]
 User=obs2nc
-ExecStart=/home/obs2nc/bin/frost-extract-all.sh
+ExecStart=/usr/local/bin/frost-extract-all
 Environment=FROST_KEY=""
 
 [Install]
