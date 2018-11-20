@@ -1,3 +1,4 @@
+numpy
 Click
 netCDF4
 python-dateutil
