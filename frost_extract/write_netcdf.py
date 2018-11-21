@@ -196,9 +196,10 @@ class NetcdfWriter(object):
         source['time_end'] = datetime.fromtimestamp(times[-1]).isoformat()
 
         config = pkgutil.get_data('frost_extract', 'templates/global_attributes.yaml')
-        for key, raw in yaml.load(config).items():
-            value = raw % source
-            setattr(nc, key, value)
+        for entry in yaml.load(config):
+            for key, raw in entry.items():
+                value = raw % source
+                setattr(nc, key, value)
 
     def _add_location(self, nc, source):
         longitude, latitude = source['geometry']['coordinates']
