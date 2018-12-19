@@ -16,7 +16,7 @@ class NetcdfWriter(object):
         self._unit_conversions = {}
 
     def get_obs_name(self, obs):
-        obs_name = obs['elementId']
+        obs_name = obs['elementId'].replace('(', '_').replace(')', '_').replace(' ', '_').strip('_')
         if 'level' in obs:
             lvl = obs['level']
             obs_name += '_%d%s' % (lvl['value'], lvl['unit'])
@@ -188,7 +188,8 @@ class NetcdfWriter(object):
         longitude, latitude = tuple(source['geometry']['coordinates'])
         source['longitude'] = longitude
         source['latitude'] = latitude
-        source['program_args'] = ' '.join(sys.argv)
+        source['program_args'] = 'frost write netcdf'
+        #source['program_args'] = ' '.join(sys.argv)
         if 'wigosId' not in source:
             source['wigosId'] = 'unknown'
         times = nc.variables['time']
@@ -215,6 +216,13 @@ class NetcdfWriter(object):
         lon.long_name     = 'longitude'
         lon.units         = 'degree_east'
         lon.assignValue(longitude)
+
+        station_name = source['id']
+        nc.createDimension('station_id', len(station_name))
+        station_id = nc.createVariable('station_id', 'c', ('station_id',))
+        station_id.cf_role = 'timeseries_id'
+        for i in range(len(station_id)):
+            station_id[i] = station_name[i]
 
 def get_conversion_function(unit_from, unit_to):
     f = cf_units.Unit(unit_from)

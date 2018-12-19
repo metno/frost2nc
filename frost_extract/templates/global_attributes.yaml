@@ -1,17 +1,17 @@
 - station_name: "%(name)s"
-- wigos: "%(wigosId)s"
-- wmo_identifier: "%(wmoId)s"
+- wigos_identifier: "%(wigosId)s"
+- wmo_identifier: "0%(wmoId)s"
 - date_created : "%(now)s"
 - Conventions: ACDD-1.3,CF-1.6
 - title: Observations from station %(name)s %(id)s
-- institution: Norwegian meteorological institute
-- source: surface observation via frost.met.no
+- institution: Norwegian Meteorological Institute
+- source: Meterological surface observation via frost.met.no
 - history: "%(now)s: %(program_args)s"
-- references: frost.met.no
+- references: ""
 - acknowledgment: frost.met.no
-- comment: observations based on data from frost.met.no
-- creator_email: post@met.no
-- creator_name: Norwegian Meteorological institute
+- comment: Observations based on data from frost.met.no
+- creator_email: observasjon@met.no
+- creator_name: Norwegian Meteorological Institute
 - creator_url: https://met.no
 - geospatial_bounds: POINT(%(longitude)f %(latitude)f)
 - geospatial_bounds_crs: latlon
@@ -19,10 +19,10 @@
 - geospatial_lat_min: "%(latitude)f"
 - geospatial_lon_max: "%(longitude)f"
 - geospatial_lon_min: "%(longitude)f"
-- id: "%(id)s"
+- id: "metno_obs_%(id)s"
 - keywords: observations
 - metadata_link: https://oaipmh.met.no/oai/?verb=GetRecord&metadataPrefix=iso&identifier=%(id)s
-- summary: observations from %(name)s
+- summary: "Surface meteorological observations from the observation network operated by the Norwegian Meteorological Institute. Data are received and quality controlled using the local KVALOBS system. Observation stations are normally operated according to WMO requirements, although specifications are not followed on some remote stations for practical matters. Stations may have more parameters than reported in this dataset."
 - time_coverage_start: "%(time_start)s"
 - time_coverage_end: "%(time_end)s"
 - featureType: timeSeries
