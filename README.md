@@ -1,5 +1,7 @@
 # Read frost.met.no data into netcdf files
 
+**This is no longer in use, and will not be updated**
+
 This contains a command-line utility for reading data from [frost](https://frost.met.no), and converting that data to netcdf format. It has been created to provide an easier way of access to observation data for scientists who prefer using the netcdf format over json. Non-scientists should use the frost api directly instead of going through his program.
 
 
